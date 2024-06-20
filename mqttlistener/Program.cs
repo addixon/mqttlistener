@@ -1,4 +1,3 @@
-using System.Text;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +8,11 @@ using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Extensions.WebSocket4Net;
 
-var host = new HostBuilder()
+public class Program
+{
+    public async Task Main(string[] args)
+    {
+        var host = new HostBuilder()
     .ConfigureFunctionsWebApplication().ConfigureHostConfiguration(builder =>
     {
         builder.AddUserSecrets<Program>();
@@ -57,7 +60,7 @@ var host = new HostBuilder()
             var mqttClient = factory.CreateMqttClient();
 
             Console.WriteLine("Connecting to MQTT broker...");
-            
+
             var connectResult = mqttClient.ConnectAsync(sp.GetRequiredService<MqttClientOptions>(), CancellationToken.None).Result;
 
             if (connectResult.ResultCode != MqttClientConnectResultCode.Success)
@@ -71,4 +74,9 @@ var host = new HostBuilder()
     })
     .Build();
 
-host.Run();
+        await host.RunAsync();
+
+    }
+
+
+}
