@@ -72,7 +72,17 @@ public class Program
 
             logger.LogInformation("Connecting to MQTT broker...");
 
-            var connectResult = mqttClient.ConnectAsync(sp.GetRequiredService<MqttClientOptions>(), CancellationToken.None).Result;
+            MqttClientConnectResult connectResult;
+            try
+            {
+                connectResult = mqttClient
+                    .ConnectAsync(sp.GetRequiredService<MqttClientOptions>(), CancellationToken.None).Result;
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Failed to connect to MQTT broker.");
+                throw;
+            }
 
             if (connectResult.ResultCode != MqttClientConnectResultCode.Success)
             {
