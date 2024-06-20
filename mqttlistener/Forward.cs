@@ -84,7 +84,7 @@ namespace mqttlistener
                 //    return new OkResult();
                 //}
 
-                logger.LogInformation("Received work item update for WorkItemId: {WorkItemId}. Payload: {@Payload}", payload.Resource!.WorkItemId, payload);
+                logger.LogInformation("Received work item update for WorkItemId: {WorkItemId}. Payload: {@Payload}. Body: {Body}", payload.Resource?.WorkItemId, payload, body);
 
                 string? assignee = payload.Resource?.Fields?.SystemAssignedTo?.NewValue;
 
