@@ -10,7 +10,7 @@ using MQTTnet.Extensions.WebSocket4Net;
 
 public class Program
 {
-    public async Task Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var host = new HostBuilder()
     .ConfigureFunctionsWebApplication().ConfigureHostConfiguration(builder =>
