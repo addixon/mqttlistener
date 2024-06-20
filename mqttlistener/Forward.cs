@@ -78,9 +78,9 @@ namespace mqttlistener
                     return new BadRequestResult();
                 }
 
-                if (payload.Resource.Revision.Fields.SystemWorkItemType != "Bug")
+                if (payload.Resource?.Revision?.Fields?.SystemWorkItemType != "Bug")
                 {
-                    logger.LogInformation("Ignoring work item type: {WorkItemType}", payload.Resource.Revision.Fields.SystemWorkItemType);
+                    logger.LogInformation("Ignoring work item type: {WorkItemType}", payload.Resource?.Revision?.Fields?.SystemWorkItemType);
                     return new OkResult();
                 }
 
