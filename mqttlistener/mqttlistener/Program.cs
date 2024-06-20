@@ -53,7 +53,7 @@ var host = new HostBuilder()
             // Create a MQTT client factory
             var factory = new MqttFactory().UseWebSocket4Net();
 
-            // Create a MQTT client instance
+            // Create a MQTT client instance 
             var mqttClient = factory.CreateMqttClient();
 
             Console.WriteLine("Connecting to MQTT broker...");
