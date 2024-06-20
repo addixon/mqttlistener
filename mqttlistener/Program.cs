@@ -2,6 +2,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using mqttlistener;
 using MQTTnet;
@@ -27,6 +28,9 @@ public class Program
 
         services.AddSingleton<MqttClientOptions>(sp =>
         {
+            var logger = sp.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("Configuring MQTT client options...");
+
             MqttConfiguration mqttConfig = sp.GetRequiredService<IOptions<MqttConfiguration>>().Value;
             CloudFlareConfiguration cfConfig = sp.GetRequiredService<IOptions<CloudFlareConfiguration>>().Value;
 
@@ -35,7 +39,7 @@ public class Program
             string username = mqttConfig.BrokerUsername;
             string password = mqttConfig.BrokerPassword;
 
-            return new MqttClientOptionsBuilder()
+            var options = new MqttClientOptionsBuilder()
                 .WithWebSocketServer(webSocketOptions =>
                 {
                     webSocketOptions.WithUri(broker);
@@ -49,17 +53,24 @@ public class Program
                 .WithClientId(clientId)
                 .WithCleanSession()
                 .Build();
+
+            logger.LogInformation("MQTT client options configured.");
+            return options;
         });
 
         services.AddScoped<IMqttClient>(sp =>
         {
+            var logger = sp.GetRequiredService<ILogger<Program>>();
+
+            logger.LogInformation("Creating MQTT client...");
+
             // Create a MQTT client factory
             var factory = new MqttFactory().UseWebSocket4Net();
 
             // Create a MQTT client instance 
             var mqttClient = factory.CreateMqttClient();
 
-            Console.WriteLine("Connecting to MQTT broker...");
+            logger.LogInformation("Connecting to MQTT broker...");
 
             var connectResult = mqttClient.ConnectAsync(sp.GetRequiredService<MqttClientOptions>(), CancellationToken.None).Result;
 
@@ -68,7 +79,7 @@ public class Program
                 throw new Exception($"Failed to connect to MQTT broker: {connectResult.ReasonString}");
             }
 
-            Console.WriteLine("The MQTT client is connected.");
+            logger.LogInformation("The MQTT client is connected.");
             return mqttClient;
         });
     })
