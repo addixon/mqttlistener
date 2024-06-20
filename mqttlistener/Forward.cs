@@ -78,11 +78,11 @@ namespace mqttlistener
                     return new BadRequestResult();
                 }
 
-                if (payload.Resource?.Revision?.Fields?.SystemWorkItemType != "Bug")
-                {
-                    logger.LogInformation("Ignoring work item type: {WorkItemType}", payload.Resource?.Revision?.Fields?.SystemWorkItemType);
-                    return new OkResult();
-                }
+                //if (payload.Resource?.Revision?.Fields?.SystemWorkItemType != "Bug")
+                //{
+                //    logger.LogInformation("Ignoring work item type: {WorkItemType}", payload.Resource?.Revision?.Fields?.SystemWorkItemType);
+                //    return new OkResult();
+                //}
 
                 string? assignee = payload.Resource?.Fields?.SystemAssignedTo?.NewValue;
 
@@ -101,8 +101,9 @@ namespace mqttlistener
                 var mqttMessage = new
                 {
                     WorkItemId = payload.Resource!.WorkItemId,
-                    Url = payload.Resource.Revision.Url,
-                    Severity = payload.Resource.Revision.Fields.MicrosoftCommonSeverity,
+                    Type = payload.Resource.Revision?.Fields?.SystemWorkItemType,
+                    Url = payload.Resource.Revision?.Url,
+                    Severity = payload.Resource.Revision?.Fields?.MicrosoftCommonSeverity,
                 };
 
                 logger.LogInformation("Forwarding message to MQTT broker: {Topic} for WorkItemId: {WorkItemId}", topic, mqttMessage.WorkItemId);
