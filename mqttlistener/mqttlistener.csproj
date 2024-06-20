@@ -2,8 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
-      <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
-      <PublishReadyToRun>true</PublishReadyToRun>
+      <OutputType>Exe</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UserSecretsId>12709f69-5e87-4bbf-ac9c-b5c903a2105a</UserSecretsId>
