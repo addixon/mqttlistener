@@ -60,7 +60,17 @@ namespace mqttlistener
                     return new OkResult();
                 }
 
-                var payload = jsonDoc.Deserialize<WorkItemUpdatedPayload>();
+                WorkItemUpdatedPayload? payload;
+
+                try
+                {
+                    payload = JsonSerializer.Deserialize<WorkItemUpdatedPayload>(body);
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, "Failed to deserialize payload.");
+                    return new BadRequestResult();
+                }
 
                 if (payload is null)
                 {
@@ -106,8 +116,9 @@ namespace mqttlistener
 
                 await mqttClient.PublishAsync(message);
             }
-            catch (JsonException)
+            catch (JsonException e)
             {
+                logger.LogError(e, "Failed to parse JSON.");
                 return new BadRequestResult();
             }
 
